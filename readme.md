@@ -1,1 +1,0 @@
-Temperature Sensor for fridge
