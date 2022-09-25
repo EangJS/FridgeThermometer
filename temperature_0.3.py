@@ -36,7 +36,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 cred = None
 cred = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-SAMPLE_SPREADSHEET_ID = '1wPJGWEIItwlbYcbH3K586pipDY0JFe1QBFw5chFwF-Q'
+SAMPLE_SPREADSHEET_ID = 'X'
 
 
 def update_sheet(sheet_range, list_values, sheet):
@@ -141,7 +141,7 @@ def report():
         print(e)
 
 
-bot = telepot.Bot('5469401522:AAG1L6SJ2rs94Z4j_tl8HCHNVnMWLcg81kc')
+bot = telepot.Bot('X')
 MessageLoop(bot, on_chat_message).run_as_thread()
 
 try:
