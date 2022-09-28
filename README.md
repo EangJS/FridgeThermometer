@@ -10,20 +10,20 @@ Uses the google sheets API to directly update google sheets for temperature logg
 <br />
 
 # Changelog
-V0.4 Beta (Latest Version)
+V0.4 Beta (Latest Version) <br />
 \+ Bug Fixes that causes requests for temperature to throw error <br />
 \+ Added Minimum / Maximum Tracker for the day (beta) <br />
 \+ Added counter to track number of Abnormalities in a day <br />
 <br />
-V0.3 Beta
+V0.3 Beta <br />
 \+ Bug Fixes that causes error to be thrown during daily reports <br />
 \- Removed unnecessary inline keyboard in telegram when making groupchat temperature requests <br />
 <br />
-V0.2 Beta
+V0.2 Beta <br />
 \+ Bug Fixes <br />
 \+ Added exception catcher to prevent unexpected exit of program <br />
 \+ Added Telegram Chat Bot to send to private user and groups <br />
 \+ Updated scheduler method instead of using datetime for daily reports <br />
 <br />
-V0.1 Beta
+V0.1 Beta <br />
 \+ Initial Temperature Sensor recorder with only google sheets API and single command of temperature to telegram user (Private Chat) <br />
