@@ -8,6 +8,7 @@ Uses the telepota library to communicate with users via telegram group/private c
 <br />
 Uses the google sheets API to directly update google sheets for temperature logging hourly <br />
 <br />
+
 # Changelog
 V0.4 Beta (Latest Version)
 \+ Bug Fixes that causes requests for temperature to throw error <br />
