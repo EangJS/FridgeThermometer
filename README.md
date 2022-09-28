@@ -16,14 +16,14 @@ V0.4 Beta (Latest Version)
 \+ Added counter to track number of Abnormalities in a day <br />
 
 V0.3 Beta
-\+ Bug Fixes that causes error to be thrown during daily reports
-\- Removed unnecessary inline keyboard in telegram when making groupchat temperature requests 
+\+ Bug Fixes that causes error to be thrown during daily reports <br />
+\- Removed unnecessary inline keyboard in telegram when making groupchat temperature requests <br />
 
 V0.2 Beta
-\+ Bug Fixes
-\+ Added exception catcher to prevent unexpected exit of program
-\+ Added Telegram Chat Bot to send to private user and groups
-\+ Updated scheduler method instead of using datetime for daily reports
+\+ Bug Fixes <br />
+\+ Added exception catcher to prevent unexpected exit of program <br />
+\+ Added Telegram Chat Bot to send to private user and groups <br />
+\+ Updated scheduler method instead of using datetime for daily reports <br />
 
 V0.1 Beta
-\+ Initial Temperature Sensor recorder with only google sheets API and single command of temperature to telegram user (Private Chat)
+\+ Initial Temperature Sensor recorder with only google sheets API and single command of temperature to telegram user (Private Chat) <br />
