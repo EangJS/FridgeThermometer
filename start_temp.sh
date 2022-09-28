@@ -1,1 +1,1 @@
-screen -dmS one python3 temperature.py
+screen -dm bash -c "python3 temperature.py;exec sh"
