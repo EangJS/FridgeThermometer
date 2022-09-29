@@ -1,4 +1,4 @@
-# Temperature V0.4 Beta Bug Fixes, Added abnormality count and min/max
+# Temperature V0.42 Beta Bug Fixes
 import os
 import glob
 import time
@@ -37,7 +37,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 cred = None
 cred = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-SAMPLE_SPREADSHEET_ID = '-Q'
+SAMPLE_SPREADSHEET_ID = '1wPJGWEIItwlbYcbH3K586pipDY0JFe1QBFw5chFwF-Q'
 
 
 def update_sheet(sheet_range, list_values, sheet):
@@ -48,7 +48,7 @@ def update_sheet(sheet_range, list_values, sheet):
         result.execute()
         return
     except Exception as e:
-        bot.sendMessage(groupchatid, f"{e}")
+        #bot.sendMessage(groupchatid, f"{e}")
         print(e)
         return
 
@@ -123,15 +123,16 @@ def send():
 
 
 def high():
-    bot.sendMessage(groupchatid, f"Temperature above 8 at {read_temp()}")
+    bot.sendMessage(groupchatid, f"Temperature above 8*C at {read_temp()}")
 
 
 def low():
     bot.sendMessage(
-        groupchatid, f"Temperature below 2 at {read_temp()}")
+        groupchatid, f"Temperature below 2*C at {read_temp()}")
 
 
 var = False
+status = False
 
 
 def report():
@@ -150,7 +151,7 @@ def report():
         print(e)
 
 
-bot = telepot.Bot('')
+bot = telepot.Bot('5469401522:AAG1L6SJ2rs94Z4j_tl8HCHNVnMWLcg81kc')
 MessageLoop(bot, on_chat_message).run_as_thread()
 
 try:
@@ -207,13 +208,13 @@ try:
             minimum = current
 
         if current > 8 and status == False:
-            bot.sendMessage(groupchatid, f"Temperature above 8 at {current}")
+            bot.sendMessage(groupchatid, f"Temperature Alert: {current}")
             schedule.every(15).minutes.do(high).tag('warnings')
             status = True
             count += 1
             var = True
         if current < 2 and status == False:
-            bot.sendMessage(groupchatid, f"Temperature below 2 at {current}")
+            bot.sendMessage(groupchatid, f"Temperature Alert: {current}")
             schedule.every(15).minutes.do(low).tag('warnings')
             status = True
             count += 1
