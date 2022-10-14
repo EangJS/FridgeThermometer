@@ -1,4 +1,4 @@
-# Temperature V0.5 Update button for temperature and beta test for history
+# Temperature V0.42 Beta Bug Fixes
 import os
 import glob
 import time
@@ -55,67 +55,26 @@ def update_sheet(sheet_range, list_values, sheet):
 
 def on_chat_message(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
-    global edited
-    curr_temp = read_temp()
-    now = datetime.now()
-    current_time = now.strftime("%H:%M:%S")
     if content_type == 'text':
         if msg['text'] == '/start':
+            curr_temp = read_temp()
             if curr_temp <= 8 and curr_temp >= 2:
-                sent = bot.sendMessage(groupchatid, f"Fridge temperature normal at: {curr_temp} *C \n", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(
-                        text="Refresh", callback_data='#002')]
-                ]
-                ))
-                edited = telepot.message_identifier(sent)
+                bot.sendMessage(
+                    groupchatid, f"Fridge temperature normal at: {curr_temp} *C")
             else:
-                sent = bot.sendMessage(groupchatid, f"Fridge temperature out of range at: {curr_temp} *C \n", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(
-                        text="Refresh", callback_data='#002')]
-                ]
-                ))
-                edited = telepot.message_identifier(sent)
+                bot.sendMessage(
+                    groupchatid, f"Fridge temperature out of range at: {curr_temp} *C")
         if msg['text'] == '/temp':
+            curr_temp = read_temp()
             if curr_temp <= 8 and curr_temp >= 2:
-                sent = bot.sendMessage(chat_id, f"Fridge temperature normal at: {curr_temp} *C \n", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(
-                        text="Refresh", callback_data='#002')]
-                ]
-                ))
-                edited = telepot.message_identifier(sent)
+                bot.sendMessage(
+                    chat_id, f"Fridge temperature normal at: {curr_temp} *C")
             else:
-                sent = bot.sendMessage(chat_id, f"Fridge temperature out of range at: {curr_temp} *C", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(
-                        text="Refresh", callback_data='#002')]
-                ]
-                ))
-                edited = telepot.message_identifier(sent)
+                bot.sendMessage(
+                    chat_id, f"Fridge temperature out of range at: {curr_temp} *C")
         if msg['text'] == '/count':
-            history = get_list()
             bot.sendMessage(
-                chat_id, f"Counter: {count} Max: {maximum} Min: {minimum}\n{history}")
-
-
-def on_callback_query(msg):
-
-    query_id, from_id, query_data = telepot.glance(
-        msg, flavor='callback_query')
-    if query_data == '#002':
-        now = datetime.now()
-        current_time = now.strftime("%H:%M:%S")
-        curr_temp = read_temp()
-        if curr_temp <= 8 and curr_temp >= 2:
-            bot.editMessageText(edited, f"Fridge temperature normal at: {curr_temp} *C \nUpdated at: {current_time} ", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(
-                    text="Refresh", callback_data='#002')]
-            ]
-            ))
-        else:
-            bot.editMessageText(edited, f"Fridge temperature out of range at: {curr_temp} *C \nUpdated at: {current_time} ", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(
-                    text="Refresh", callback_data='#002')]
-            ]
-            ))
+                chat_id, f"Counter: {count} Max: {maximum} Min: {minimum}")
 
 
 def read_temp_raw():
@@ -172,13 +131,6 @@ def low():
         groupchatid, f"Temperature below 2*C at {read_temp()}")
 
 
-def get_list():  # "Sheet1!A1:G2"
-    result2 = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
-                                 range="Main Page!A1:C26").execute()
-    output = result2.get('values')
-    return output
-
-
 var = False
 status = False
 
@@ -206,8 +158,7 @@ Minimum of {minimum}*C""")
 
 
 bot = telepot.Bot('5469401522:AAG1L6SJ2rs94Z4j_tl8HCHNVnMWLcg81kc')
-MessageLoop(bot, {'chat': on_chat_message,
-                  'callback_query': on_callback_query}).run_as_thread()
+MessageLoop(bot, on_chat_message).run_as_thread()
 
 try:
     os.system('modprobe w1-gpio')
@@ -264,13 +215,13 @@ try:
             minimum = current
 
         if current > 8 and status == False:
-            # bot.sendMessage(groupchatid, f"Temperature Alert: {current}") #set a delay to avoid alerts for random spikes
+            bot.sendMessage(groupchatid, f"Temperature Alert: {current}")
             schedule.every(15).minutes.do(high).tag('warnings')
             status = True
             count += 1
             var = True
         if current < 2 and status == False:
-            # bot.sendMessage(groupchatid, f"Temperature Alert: {current}") #set a delay to avoid alerts for random spikes
+            bot.sendMessage(groupchatid, f"Temperature Alert: {current}")
             schedule.every(15).minutes.do(low).tag('warnings')
             status = True
             count += 1
