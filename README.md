@@ -10,7 +10,11 @@ Uses the google sheets API to directly update google sheets for temperature logg
 <br />
 
 # Changelog
-V0.4 Beta (Latest Version) <br />
+V1.0 29 Nov 2022 (Latest Version) <br />
+\+ Ensure wi-fi is connected at all times <br />
+\+ Local text file logging <br />
+<br />
+V0.4 Beta <br />
 \+ Bug Fixes that causes requests for temperature to throw error <br />
 \+ Added Minimum / Maximum Tracker for the day (beta) <br />
 \+ Added counter to track number of Abnormalities in a day <br />
