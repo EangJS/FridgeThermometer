@@ -1,8 +1,10 @@
-# Temperature V0.52 Get history function
+# Temperature V1.0 Increased reliability by ensuring wi-fi is connected
 import os
 import glob
 import time
-
+import urllib.request
+import requests
+import socket
 from datetime import datetime
 from tokenize import group
 import schedule
@@ -37,7 +39,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 cred = None
 cred = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-SAMPLE_SPREADSHEET_ID = ''
+SAMPLE_SPREADSHEET_ID = '1wPJGWEIItwlbYcbH3K586pipDY0JFe1QBFw5chFwF-Q'
 
 
 def update_sheet(sheet_range, list_values, sheet):
@@ -51,6 +53,34 @@ def update_sheet(sheet_range, list_values, sheet):
         #bot.sendMessage(groupchatid, f"{e}")
         print(e)
         return
+
+
+def check_internet():
+    try:
+        urllib.request.urlopen('https://www.google.com/')
+        file1 = open("logs.txt", "a")
+        now = datetime.now()
+    except:
+        try:
+
+            print("Failed on first attempt, trying again...")
+            time.sleep(3)
+            urllib.request.urlopen('https://www.bing.com/')
+            print("Passed on second attempt")
+            file1.write(f"Connected successfully on second try: {now} \n")
+        except:
+            try:
+                print("Failed on second attempt, trying again...")
+                time.sleep(3)
+                urllib.request.urlopen('https://www.cloudflare.com/')
+                print("Passed on third attempt")
+                file1.write(f"Connected successfully on third try: {now} \n")
+            except:
+                print("Failed on all attempts.")
+                file1 = open("logs.txt", "a")
+                now = datetime.now()
+                file1.write(f"Failed to connect at {now}. Attempted reboot \n")
+                os.system("sudo reboot")
 
 
 def on_chat_message(msg):
@@ -71,6 +101,7 @@ def on_chat_message(msg):
                         text="Refresh", callback_data='#002')]
                 ]
                 ))
+
                 edited = telepot.message_identifier(sent)
             else:
                 sent = bot.sendMessage(groupchatid, f"Fridge temperature out of range at: {curr_temp} *C \n", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
@@ -81,19 +112,11 @@ def on_chat_message(msg):
                 edited = telepot.message_identifier(sent)
         if msg['text'] == '/temp':
             if curr_temp <= 8 and curr_temp >= 2:
-                sent = bot.sendMessage(chat_id, f"Fridge temperature normal at: {curr_temp} *C \n", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(
-                        text="Refresh", callback_data='#001')]
-                ]
-                ))
-                edited1 = telepot.message_identifier(sent)
+                sent = bot.sendMessage(
+                    chat_id, f"Fridge temperature normal at: {curr_temp} *C \n")
             else:
-                sent = bot.sendMessage(chat_id, f"Fridge temperature out of range at: {curr_temp} *C", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(
-                        text="Refresh", callback_data='#001')]
-                ]
-                ))
-                edited1 = telepot.message_identifier(sent)
+                sent = bot.sendMessage(
+                    chat_id, f"Fridge temperature out of range at: {curr_temp} *C")
         if msg['text'] == '/count':
             history = get_list()
             bot.sendMessage(
@@ -191,15 +214,19 @@ def get_hx():
     output = result2.get('values')
     string = "Past 12 Hours Readings:\n"
     for i in output:
-        string += f"{i[0]} {i[1]} Temperature: {i[2]}*C\n\n"
+        string += f"{i[0]} {i[1]} Temperature: {i[2]}*C\n"
     return string
 
 
 def high():
+    count += 1
+    print("hi")
     bot.sendMessage(groupchatid, f"Temperature above 8*C at {read_temp()}")
 
 
 def low():
+    count += 1
+    print("low")
     bot.sendMessage(
         groupchatid, f"Temperature below 2*C at {read_temp()}")
 
@@ -214,7 +241,7 @@ def report():
         if var == True:
             bot.sendMessage(
                 groupchatid, f"""
-Daily Update:{count} occurances of abnormal temperature(s) detected today
+Daily Update:
 Maximum of {maximum}*C
 Minimum of {minimum}*C
 
@@ -233,7 +260,7 @@ Minimum of {minimum}*C
         print(e)
 
 
-bot = telepot.Bot('')
+bot = telepot.Bot('5469401522:AAG1L6SJ2rs94Z4j_tl8HCHNVnMWLcg81kc')
 MessageLoop(bot, {'chat': on_chat_message,
                   'callback_query': on_callback_query}).run_as_thread()
 
@@ -258,11 +285,13 @@ try:
     values = [["Started at", current_date, current_time]]
     update_sheet("Logs!A1", values, sheet)
     print("Service Started")
-    print("Sending initial state...")
-    send()
-    print("Data sent!,Ready.")
+    #print("Sending initial state...")
+    # send()
+    #print("Data sent!,Ready.")
     schedule.every().day.at("21:30").do(report)
     while 1:
+        time.sleep(5)
+        check_internet()
         schedule.run_pending()
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
@@ -295,18 +324,18 @@ try:
             # bot.sendMessage(groupchatid, f"Temperature Alert: {current}") #set a delay to avoid alerts for random spikes
             schedule.every(15).minutes.do(high).tag('warnings')
             status = True
-            count += 1
+#            count += 1
             var = True
         if current < 2 and status == False:
             # bot.sendMessage(groupchatid, f"Temperature Alert: {current}") #set a delay to avoid alerts for random spikes
             schedule.every(15).minutes.do(low).tag('warnings')
             status = True
-            count += 1
+#            count += 1
             var = True
         if (current <= 8 and current >= 2):
             schedule.clear('warnings')
             status = False
 
 except Exception as e:
-    bot.sendMessage(groupchatid, f"{e}")
+    #bot.sendMessage(groupchatid, f"{e}")
     print(e)
