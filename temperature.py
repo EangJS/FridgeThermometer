@@ -1,4 +1,4 @@
-# Temperature V1.0 Increased reliability by ensuring wi-fi is connected
+# Temperature Bug Fixes
 import os
 import glob
 import time
@@ -26,7 +26,6 @@ io.setup(led1, io.OUT)
 p = io.PWM(led1, 90)
 minimum = 100
 maximum = -100
-count = 0
 for i in range(0, 10):
     p.start(90)
     time.sleep(0.1)
@@ -39,7 +38,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 cred = None
 cred = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-SAMPLE_SPREADSHEET_ID = ''
+SAMPLE_SPREADSHEET_ID = '1wPJGWEIItwlbYcbH3K586pipDY0JFe1QBFw5chFwF-Q'
 
 
 def update_sheet(sheet_range, list_values, sheet):
@@ -117,10 +116,6 @@ def on_chat_message(msg):
             else:
                 sent = bot.sendMessage(
                     chat_id, f"Fridge temperature out of range at: {curr_temp} *C")
-        if msg['text'] == '/count':
-            history = get_list()
-            bot.sendMessage(
-                chat_id, f"Counter: {count} Max: {maximum} Min: {minimum}\n{history}")
 
 
 def on_callback_query(msg):
@@ -207,25 +202,27 @@ def send():
 
 
 def get_hx():
-    service = build('sheets', 'v4', credentials=cred)
-    sheet = service.spreadsheets()
-    result2 = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
-                                 range="Main Page!A3:C26").execute()
-    output = result2.get('values')
-    string = "Past 12 Hours Readings:\n"
-    for i in output:
-        string += f"{i[0]} {i[1]} Temperature: {i[2]}*C\n"
-    return string
+    try:
+        service = build('sheets', 'v4', credentials=cred)
+        sheet = service.spreadsheets()
+        result2 = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
+                                     range="Main Page!A3:C26").execute()
+        output = result2.get('values')
+        string = "Past 12 Hours Readings:\n"
+        for i in output:
+            string += f"{i[0]} {i[1]} Temperature: {i[2]}*C\n"
+        return string
+    except Exception as e:
+        print(e)
+
 
 
 def high():
-    count += 1
     print("hi")
     bot.sendMessage(groupchatid, f"Temperature above 8*C at {read_temp()}")
 
 
 def low():
-    count += 1
     print("low")
     bot.sendMessage(
         groupchatid, f"Temperature below 2*C at {read_temp()}")
@@ -260,7 +257,7 @@ Minimum of {minimum}*C
         print(e)
 
 
-bot = telepot.Bot('')
+bot = telepot.Bot('5469401522:AAG1L6SJ2rs94Z4j_tl8HCHNVnMWLcg81kc')
 MessageLoop(bot, {'chat': on_chat_message,
                   'callback_query': on_callback_query}).run_as_thread()
 
@@ -298,7 +295,6 @@ try:
         current_time_2 = now.strftime("%H:%M")
         if current_time_2 == "21:32":
             var = False
-            count = 0
             maximum = -100
             minimum = 100
         try:
@@ -322,15 +318,13 @@ try:
 
         if current > 8 and status == False:
             # bot.sendMessage(groupchatid, f"Temperature Alert: {current}") #set a delay to avoid alerts for random spikes
-            schedule.every(15).minutes.do(high).tag('warnings')
+            schedule.every(5).minutes.do(high).tag('warnings')
             status = True
-#            count += 1
             var = True
         if current < 2 and status == False:
             # bot.sendMessage(groupchatid, f"Temperature Alert: {current}") #set a delay to avoid alerts for random spikes
-            schedule.every(15).minutes.do(low).tag('warnings')
+            schedule.every(5).minutes.do(low).tag('warnings')
             status = True
-#            count += 1
             var = True
         if (current <= 8 and current >= 2):
             schedule.clear('warnings')
