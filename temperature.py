@@ -38,7 +38,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 cred = None
 cred = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-SAMPLE_SPREADSHEET_ID = '1wPJGWEIItwlbYcbH3K586pipDY0JFe1QBFw5chFwF-Q'
+SAMPLE_SPREADSHEET_ID = ''
 
 
 def update_sheet(sheet_range, list_values, sheet):
@@ -63,14 +63,14 @@ def check_internet():
         try:
 
             print("Failed on first attempt, trying again...")
-            time.sleep(3)
+            time.sleep(5)
             urllib.request.urlopen('https://www.bing.com/')
             print("Passed on second attempt")
             file1.write(f"Connected successfully on second try: {now} \n")
         except:
             try:
                 print("Failed on second attempt, trying again...")
-                time.sleep(3)
+                time.sleep(5)
                 urllib.request.urlopen('https://www.cloudflare.com/')
                 print("Passed on third attempt")
                 file1.write(f"Connected successfully on third try: {now} \n")
@@ -234,7 +234,6 @@ status = False
 
 def report():
     try:
-        history = get_hx()
         if var == True:
             bot.sendMessage(
                 groupchatid, f"""
@@ -242,7 +241,8 @@ Daily Update:
 Maximum of {maximum}*C
 Minimum of {minimum}*C
 
-{history}
+Use /getPast to get last 12 hours data
+
 """)
         else:
             bot.sendMessage(
@@ -251,13 +251,14 @@ Daily Update: No abnormal temperatures detected today
 Maximum of {maximum}*C
 Minimum of {minimum}*C
 
-{history}
+Use /getPast to get last 12 hours data
+
 """)
     except Exception as e:
         print(e)
 
 
-bot = telepot.Bot('5469401522:AAG1L6SJ2rs94Z4j_tl8HCHNVnMWLcg81kc')
+bot = telepot.Bot('')
 MessageLoop(bot, {'chat': on_chat_message,
                   'callback_query': on_callback_query}).run_as_thread()
 
