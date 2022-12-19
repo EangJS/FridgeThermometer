@@ -1,4 +1,5 @@
 # Temperature Bug Fixes
+import json
 import os
 import glob
 import time
@@ -33,14 +34,12 @@ for i in range(0, 10):
     time.sleep(0.1)
 
 
+
 SERVICE_ACCOUNT_FILE = 'keys1.json'
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 cred = None
 cred = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-SAMPLE_SPREADSHEET_ID = ''
-
-
 def update_sheet(sheet_range, list_values, sheet):
     try:
         result = sheet.values().append(
@@ -258,7 +257,7 @@ Use /getPast to get last 12 hours data
         print(e)
 
 
-bot = telepot.Bot('')
+bot = telepot.Bot(TELEGRAM_TOKEN)
 MessageLoop(bot, {'chat': on_chat_message,
                   'callback_query': on_callback_query}).run_as_thread()
 
@@ -278,6 +277,7 @@ try:
     service = build('sheets', 'v4', credentials=cred)
     sheet = service.spreadsheets()
     now = datetime.now()
+
     current_time = now.strftime("%H:%M:%S")
     current_date = now.strftime("%d/%m/%Y")
     values = [["Started at", current_date, current_time]]
@@ -292,6 +292,8 @@ try:
         check_internet()
         schedule.run_pending()
         now = datetime.now()
+        
+        current_datetime = now.strftime("%d/%m/%Y %H:%M:%S")
         current_time = now.strftime("%H:%M:%S")
         current_time_2 = now.strftime("%H:%M")
         if current_time_2 == "21:32":
@@ -311,7 +313,14 @@ try:
         if type(current) == type(None):  # safeguard
             print("Current == NoneType")
             continue
-
+        
+        with open('T_log.json','r+') as f:
+            data = json.load(f)
+            data['Time'] = current_datetime
+            data['Temp'] = current
+            f.seek(0)
+            json.dump(data,f,indent=4)
+            f.truncate()
         if current > maximum:
             maximum = current
         if current < minimum:
