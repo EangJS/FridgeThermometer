@@ -40,6 +40,8 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 cred = None
 cred = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+SAMPLE_SPREADSHEET_ID = '1wPJGWEIItwlbYcbH3K586pipDY0JFe1QBFw5chFwF-Q'
+TELEGRAM_TOKEN = '5469401522:AAG1L6SJ2rs94Z4j_tl8HCHNVnMWLcg81kc'
 def update_sheet(sheet_range, list_values, sheet):
     try:
         result = sheet.values().append(
@@ -283,6 +285,10 @@ try:
     values = [["Started at", current_date, current_time]]
     update_sheet("Logs!A1", values, sheet)
     print("Service Started")
+    file1 = open("logs.txt", "a")
+    now = datetime.now()
+    file1.write(f"Service started at {now} \n")
+    file1.close() 
     #print("Sending initial state...")
     # send()
     #print("Data sent!,Ready.")
