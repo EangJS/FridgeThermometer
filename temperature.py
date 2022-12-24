@@ -283,6 +283,10 @@ try:
     values = [["Started at", current_date, current_time]]
     update_sheet("Logs!A1", values, sheet)
     print("Service Started")
+    file1 = open("logs.txt", "a")
+    now = datetime.now()
+    file1.write(f"Service started at {now} \n")
+    file1.close() 
     #print("Sending initial state...")
     # send()
     #print("Data sent!,Ready.")
