@@ -71,8 +71,8 @@ def check_internet():
         except:
             try:
                 print("Failed on second attempt, trying again...")
-                time.sleep(5)
-                urllib.request.urlopen('https://www.cloudflare.com/')
+                time.sleep(10)
+                urllib.request.urlopen('https://www.google.com/')
                 print("Passed on third attempt")
                 file1.write(f"Connected successfully on third try: {now} \n")
             except:
@@ -95,66 +95,15 @@ def on_chat_message(msg):
             history = get_hx()
             bot.sendMessage(chat_id, history)
         if msg['text'] == '/start':
-            if curr_temp <= 8 and curr_temp >= 2:
-                sent = bot.sendMessage(groupchatid, f"Fridge temperature normal at: {curr_temp} *C \n", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(
-                        text="Refresh", callback_data='#002')]
-                ]
-                ))
-
-                edited = telepot.message_identifier(sent)
-            else:
-                sent = bot.sendMessage(groupchatid, f"Fridge temperature out of range at: {curr_temp} *C \n", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(
-                        text="Refresh", callback_data='#002')]
-                ]
-                ))
-                edited = telepot.message_identifier(sent)
+            bot.sendMessage(groupchatid,f"Fridge temperature at: {curr_temp} *C \n")
         if msg['text'] == '/temp':
-            if curr_temp <= 8 and curr_temp >= 2:
-                sent = bot.sendMessage(
-                    chat_id, f"Fridge temperature normal at: {curr_temp} *C \n")
-            else:
-                sent = bot.sendMessage(
-                    chat_id, f"Fridge temperature out of range at: {curr_temp} *C")
+            sent = bot.sendMessage(chat_id, f"Fridge temperature normal at: {curr_temp} *C \n")
 
 
 def on_callback_query(msg):
 
     query_id, from_id, query_data = telepot.glance(
         msg, flavor='callback_query')
-    if query_data == '#002':
-        now = datetime.now()
-        current_time = now.strftime("%H:%M:%S")
-        curr_temp = read_temp()
-        if curr_temp <= 8 and curr_temp >= 2:
-            bot.editMessageText(edited, f"Fridge temperature normal at: {curr_temp} *C \nUpdated at: {current_time} ", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(
-                    text="Refresh", callback_data='#002')]
-            ]
-            ))
-        else:
-            bot.editMessageText(edited, f"Fridge temperature out of range at: {curr_temp} *C \nUpdated at: {current_time} ", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(
-                    text="Refresh", callback_data='#002')]
-            ]
-            ))
-    if query_data == '#001':
-        now = datetime.now()
-        current_time = now.strftime("%H:%M:%S")
-        curr_temp = read_temp()
-        if curr_temp <= 8 and curr_temp >= 2:
-            bot.editMessageText(edited1, f"Fridge temperature normal at: {curr_temp} *C \nUpdated at: {current_time} ", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(
-                    text="Refresh", callback_data='#001')]
-            ]
-            ))
-        else:
-            bot.editMessageText(edited1, f"Fridge temperature out of range at: {curr_temp} *C \nUpdated at: {current_time} ", reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(
-                    text="Refresh", callback_data='#001')]
-            ]
-            ))
 
 
 def read_temp_raw():
@@ -327,18 +276,16 @@ try:
             f.seek(0)
             json.dump(data,f,indent=4)
             f.truncate()
-        if current > maximum:
+        if current > maximum and current < 40:
             maximum = current
-        if current < minimum:
+        if current < minimum and current > -20:
             minimum = current
 
         if current > 8 and status == False:
-            # bot.sendMessage(groupchatid, f"Temperature Alert: {current}") #set a delay to avoid alerts for random spikes
             schedule.every(5).minutes.do(high).tag('warnings')
             status = True
             var = True
         if current < 2 and status == False:
-            # bot.sendMessage(groupchatid, f"Temperature Alert: {current}") #set a delay to avoid alerts for random spikes
             schedule.every(5).minutes.do(low).tag('warnings')
             status = True
             var = True
