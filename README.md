@@ -10,7 +10,10 @@ Uses the google sheets API to directly update google sheets for temperature logg
 <br />
 
 # Changelog
-V1.0 29 Nov 2022 (Latest Version) <br />
+V1.1 26 Jan 2022 <br />
+\+ Added refresh button <br />
+
+V1.0 29 Nov 2022 <br />
 \+ Ensure wi-fi is connected at all times <br />
 \+ Local text file logging <br />
 <br />
