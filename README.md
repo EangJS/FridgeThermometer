@@ -9,20 +9,20 @@ Uses the google sheets API to directly update google sheets for temperature logg
 # Changelog
 ##
 V1.1 26 Jan 2022
-\+ Added refresh button
++ Added refresh button
 
 V1.0 29 Nov 2022
-\+ Ensure wi-fi is connected at all times
-\+ Local text file logging
++ Ensure wi-fi is connected at all times
++ Local text file logging
 V0.4 Beta
-\+ Bug Fixes that causes requests for temperature to throw error
-\+ Added Minimum / Maximum Tracker for the day (beta)
-\+ Added counter to track number of Abnormalities in a day
++ Bug Fixes that causes requests for temperature to throw error
++ Added Minimum / Maximum Tracker for the day (beta)
++ Added counter to track number of Abnormalities in a day
 V0.3 Beta
-\+ Bug Fixes that causes error to be thrown during daily reports
-\- Removed unnecessary inline keyboard in telegram when making groupchat temperature requests
++ Bug Fixes that causes error to be thrown during daily reports
+- Removed unnecessary inline keyboard in telegram when making groupchat temperature requests
 V0.2 Beta
-\+ Bug Fixes
++ Bug Fixes
 Added exception catcher to prevent unexpected exit of program
 Added Telegram Chat Bot to send to private user and groups 
 Updated scheduler method instead of using datetime for daily reports
