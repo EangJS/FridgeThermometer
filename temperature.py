@@ -1,4 +1,6 @@
 # Temperature Bug Fixes
+import sys
+import subprocess
 import json
 import os
 import glob
@@ -20,7 +22,13 @@ from google.oauth2 import service_account
 import telepot
 from telepot.loop import MessageLoop
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
+
+
 groupchatid = -761327315
+p = subprocess.Popen([sys.executable, '/home/zeropi/FridgeThermometer/serve.py'], 
+                                    stdout=subprocess.PIPE, 
+                                    stderr=subprocess.STDOUT)
+
 io.setmode(io.BCM)
 led1 = 25
 io.setup(led1, io.OUT)
@@ -184,20 +192,9 @@ status = False
 
 def report():
     try:
-        if var == True:
-            bot.sendMessage(
-                groupchatid, f"""
+        bot.sendMessage(
+            groupchatid, f"""
 Daily Update:
-Maximum of {maximum}*C
-Minimum of {minimum}*C
-
-Use /getPast to get last 12 hours data
-
-""")
-        else:
-            bot.sendMessage(
-                groupchatid, f"""
-Daily Update: No abnormal temperatures detected today
 Maximum of {maximum}*C
 Minimum of {minimum}*C
 
@@ -206,7 +203,6 @@ Use /getPast to get last 12 hours data
 """)
     except Exception as e:
         print(e)
-
 
 bot = telepot.Bot(TELEGRAM_TOKEN)
 MessageLoop(bot, {'chat': on_chat_message,
@@ -247,7 +243,7 @@ try:
         check_internet()
         schedule.run_pending()
         now = datetime.now()
-        
+        print("OK")        
         current_datetime = now.strftime("%d/%m/%Y %H:%M:%S")
         current_time = now.strftime("%H:%M:%S")
         current_time_2 = now.strftime("%H:%M")
@@ -271,6 +267,7 @@ try:
         
         with open('T_log.json','r+') as f:
             data = json.load(f)
+            print(current)
             data['Time'] = current_datetime
             data['Temp'] = current
             f.seek(0)

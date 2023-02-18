@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+    .body{
+        background-color:#29445D;
+    }
+    .center{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+</style>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Untitled</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/Navbar-Centered-Brand-Dark-icons.css">
+</head>
+
+<body class="body">
+    <nav class="navbar navbar-dark navbar-expand-md bg-dark py-3">
+        <div class="container"><a class="navbar-brand d-flex align-items-center" href="#"></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-6"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse flex-grow-0 order-md-first" id="navcol-6">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#">Temperature Monitor</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Graphs</a></li>
+                </ul>
+                <div class="d-md-none my-2"><button class="btn btn-light me-2" type="button">Button</button><button class="btn btn-primary" type="button">Button</button></div>
+            </div>
+        </div>
+    </nav>
+    <div class="center">
+        <div class="container-fluid" style="text-align: center;">
+            <div class="card shadow border-start-primary py2">
+                <div class="card-body">
+                    <div class="row align-items-center no-gutters">
+                        <h1>Current Temperature is:</h1>
+                        <h3 id="temperature"></h3>
+                    </div>
+                </div>        
+            </div>
+        </div>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+
+    <script>
+        function get_Data(){
+            fetch("http://192.168.50.7:8000",{cache: "no-store"})
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("temperature").innerText = data.temperature + "*C";
+            })
+            .catch(error =>{
+                console.log("Failed to fetch");
+                document.getElementById("temperature").innerText = "No data available";
+            });            
+        }
+        get_Data();
+
+        setInterval(get_Data,5000);
+
+    </script>
+</body>
+
+</html>
