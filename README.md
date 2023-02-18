@@ -6,8 +6,17 @@ Uses the telepota li ary to communicate with user via telegram group/private cha
 - Daily reports of abnormal temperatures are also sent daily
 Uses the google sheets API to directly update google sheets for temperature logging hourly
 
+# Getting started
+##
+1. Clone this repositry to the home directory of the device
+2. Copy T_log.json, logs.json, and all .sh files from this repositry to the home directory
+3. In crontab, set start_temp.sh to run on every startup and make_run.sh every 5-10 mins or as desired 
+
 # Changelog
 ##
+V2.0 18 Feb 2022
++ Added webpage dashboard
+
 V1.1 26 Jan 2022
 + Added refresh button
 
