@@ -66,7 +66,10 @@ def update_sheet(sheet_range, list_values, sheet):
 def check_internet():
     try:
         urllib.request.urlopen('https://www.google.com/')
-        file1 = open("logs.txt", "a")
+        file1 = open("logs.txt", "r+")
+        lines = file1.read().splitlines()
+        while len(lines) > 5:
+            lines.pop(0)
         now = datetime.now()
     except:
         try:
@@ -75,21 +78,25 @@ def check_internet():
             time.sleep(5)
             urllib.request.urlopen('https://www.bing.com/')
             print("Passed on second attempt")
-            file1.write(f"Connected successfully on second try: {now} \n")
+            lines.append(f"Connected successfully on second try: {now} \n")
+            for i in lines:
+                file1.write(i + '\n')
         except:
             try:
                 print("Failed on second attempt, trying again...")
                 time.sleep(10)
                 urllib.request.urlopen('https://www.google.com/')
                 print("Passed on third attempt")
-                file1.write(f"Connected successfully on third try: {now} \n")
+                lines.append(f"Connected successfully on third try: {now} \n")
+                for i in lines:
+                    file1.write(i + '\n')
             except:
                 print("Failed on all attempts.")
-                file1 = open("logs.txt", "a")
                 now = datetime.now()
-                file1.write(f"Failed to connect at {now}. Attempted reboot \n")
+                lines.append(f"Failed to connect at {now}. Attempted reboot \n")
                 os.system("sudo reboot")
-
+                for i in lines:
+                    file1.write(i + '\n')
 
 def on_chat_message(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
@@ -230,6 +237,11 @@ try:
     values = [["Started at", current_date, current_time]]
     update_sheet("Logs!A1", values, sheet)
     print("Service Started")
+    with open('logs.txt', 'r') as fin:
+        data = fin.read().splitlines(True)
+    with open('logs.txt', 'w') as fout:
+        fout.writelines(data[1:])
+    
     file1 = open("logs.txt", "a")
     now = datetime.now()
     file1.write(f"Service started at {now} \n")
@@ -243,7 +255,6 @@ try:
         check_internet()
         schedule.run_pending()
         now = datetime.now()
-        print("OK")        
         current_datetime = now.strftime("%d/%m/%Y %H:%M:%S")
         current_time = now.strftime("%H:%M:%S")
         current_time_2 = now.strftime("%H:%M")
