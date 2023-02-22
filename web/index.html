@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <style>
-    .body{
-        background-color:#29445D;
+    .body {
+        background-color: #29445d;
     }
-    .center{
+
+    .center {
         position: fixed;
         top: 50%;
         left: 50%;
@@ -15,20 +15,28 @@
 </style>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
     <title>Keystone Medicine Fridge</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/Navbar-Centered-Brand-Dark-icons.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/Navbar-Centered-Brand-Dark-icons.css" />
 </head>
 
 <body class="body">
     <nav class="navbar navbar-dark navbar-expand-md bg-dark py-3">
-        <div class="container"><a class="navbar-brand d-flex align-items-center" href="#">Keystone Medicine Fridge</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-6"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">Keystone Medicine Fridge</a><button
+                data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-6">
+                <span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse flex-grow-0 order-md-first" id="navcol-6">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link active" href="#">Temperature Monitor</a></li>
-                    <li class="nav-item"><a class="nav-link" href="graphs.html">Graphs</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Temperature Monitor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="graphs.html">Graphs</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -36,37 +44,45 @@
     <div class="center">
         <div class="container-fluid" style="text-align: center;">
             <div class="card shadow border-start-primary py2">
-                <div class="card-body">
-                    <div class="row align-items-center no-gutters">
+                <div class="card-body" style="position: relative">
+                    <div class="row align-items-center ">
                         <h1>Current Temperature is:</h1>
                         <h3 id="temperature"></h3>
-			<p id="time"></p>
+                        <meter id="tempBar" min="0" max="10" low="2" high="8" optimum="5"></meter>
+                        <p id="time"></p>
                     </div>
-                </div>        
+                    <div id="loader" class="spinner-border text-primary"></div>
+                </div>
+
             </div>
         </div>
+    </div>
     </div>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 
     <script>
-        function get_Data(){
-            fetch("http://192.168.50.7:8000",{cache: "no-store"})
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                document.getElementById("temperature").innerText = data.Temp + "°C";
-		document.getElementById("time").innerText = "As of: " + data.Time;
-            })
-            .catch(error =>{
-                console.log("Failed to fetch");
-                document.getElementById("temperature").innerText = "No data available";
-            });            
+        function get_Data() {
+            fetch("http://192.168.50.7:8000", { cache: "no-store" })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    document.getElementById("loader").remove();
+                    document.getElementById("temperature").innerText = data.Temp + "°C";
+                    document.getElementById("tempBar").value = data.Temp;
+                    document.getElementById("time").innerText = "As of: " + data.Time;
+                })
+                .catch((error) => {
+                    document.getElementById("loader").remove();
+                    console.log("Failed to fetch");
+                    console.log(error)
+                    document.getElementById("temperature").innerText =
+                        "No data available";
+                });
         }
         get_Data();
 
-        setInterval(get_Data,5000);
-
+        setInterval(get_Data, 5000);
     </script>
 </body>
 
