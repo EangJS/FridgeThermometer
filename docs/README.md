@@ -1,4 +1,6 @@
 # Fridge Temperature Sensor
+
+## Raspberry Pi Zero
 A simple IOT device with Raspberry Pi Zero W V1.1
 Used to track fridge temperature using the DS18B20 Digital One-Wire temperature sensor directly soldered onto GPIO pins of the Raspberry Pi
 Uses the telepota li ary to communicate with user via telegram group/private chat
@@ -37,3 +39,23 @@ Added Telegram Chat Bot to send to private user and groups
 Updated scheduler method instead of using datetime for daily reports
 V0.1 Beta
  Initial Temperature Sensor recorder with only google sheets API and single command of temperature to telegram user (Private Chat)
+
+## ESP32
+
+ESP32 Version of Fridge Thermometer
+
+# Getting Started
+1. Download .zip file from https://github.com/witnessmenow/Universal-Arduino-Telegram-Bot
+2. Add zip file to arduino ide library
+3. Install ArduinoJson by Benoit Blanchon
+4. Install DallasTemperature by Miles Burton
+5. Install OneWire by Jim Studt et.al.
+6. Install drivers for ESP32 if not done
+7. Upload .ino file into ESP32
+
+# Changelog
+
+V0.1
++ Ability to recieve temperature upon request via telegram bot
++ Ability to receive alerts when temperature out of desired range
+ALL FUNCTIONALITY HAS NOT BEEN TESTED EXTENSIVELY YET BUGS MAY OCCUR
