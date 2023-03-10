@@ -53,9 +53,21 @@ ESP32 Version of Fridge Thermometer
 6. Install drivers for ESP32 if not done
 7. Upload .ino file into ESP32
 
+# Initial setup
+1. Connect to ESP32-FTemp WiFi
+2. Fill in necessary details
+3. Get groupID from: https://api.telegram.org/bot[API_KEY from botfather]/getUpdates (begins with "id":-123456789)
+4. Ready to use
+
+
 # Changelog
+
+V1.0
++ WiFi Browser setup 192.168.4.1
++ Inlinekeyboard to update message
 
 V0.1
 + Ability to recieve temperature upon request via telegram bot
 + Ability to receive alerts when temperature out of desired range
 ALL FUNCTIONALITY HAS NOT BEEN TESTED EXTENSIVELY YET BUGS MAY OCCUR
+
