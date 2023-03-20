@@ -1,6 +1,5 @@
 * Table of Contents
 {:toc}
-  
 
 # Fridge Temperature Sensor
 
