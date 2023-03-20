@@ -1,5 +1,9 @@
+---
+title: Guide
+---
+
 * Table of Contents
-{:toc}
+  {:toc}
 
 # Fridge Temperature Sensor
 
