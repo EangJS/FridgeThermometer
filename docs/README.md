@@ -1,3 +1,7 @@
+* Table of Contents
+{:toc}
+  
+
 # Fridge Temperature Sensor
 
 ## Raspberry Pi Zero
