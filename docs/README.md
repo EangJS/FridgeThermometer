@@ -5,7 +5,7 @@ title: Guide
 * Table of Contents
 {:toc}
 
-# Fridge Temperature Sensor
+# Fridge Temperature Sensor Guide
 
 ## Raspberry Pi Zero
 A simple IOT device with Raspberry Pi Zero W V1.1
