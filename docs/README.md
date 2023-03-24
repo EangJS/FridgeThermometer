@@ -15,7 +15,7 @@ Uses the telepota li ary to communicate with user via telegram group/private cha
 - Daily reports of abnormal temperatures are also sent daily
 Uses the google sheets API to directly update google sheets for temperature logging hourly
 
-# Getting started with fridge thermometer
+# Getting started
 
 1. Clone this repositry to the home directory of the device
 2. Copy ```T_log.json```, ```logs.json```, and all .sh files from this repositry to the home directory
