@@ -1,4 +1,11 @@
-# Fridge Temperature Sensor
+---
+title: Guide
+---
+
+* Table of Contents
+{:toc}
+
+# Fridge Temperature Sensor Guide
 
 ## Raspberry Pi Zero
 A simple IOT device with Raspberry Pi Zero W V1.1
@@ -71,3 +78,4 @@ V0.1
 + Ability to receive alerts when temperature out of desired range
 ALL FUNCTIONALITY HAS NOT BEEN TESTED EXTENSIVELY YET BUGS MAY OCCUR
 
+>>>>>>> 6db50d0ea9f6ca564c86de17b6c4e6d74f182c8b
