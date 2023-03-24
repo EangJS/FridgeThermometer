@@ -25,9 +25,9 @@ from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton, Reply
 
 
 groupchatid = -761327315
-p = subprocess.Popen([sys.executable, '/home/zeropi/FridgeThermometer/serve.py'], 
-                                    stdout=subprocess.PIPE, 
-                                    stderr=subprocess.STDOUT)
+p = subprocess.Popen([sys.executable, '/home/zeropi/FridgeThermometer/serve.py'],
+                     stdout=subprocess.PIPE,
+                     stderr=subprocess.STDOUT)
 
 io.setmode(io.BCM)
 led1 = 25
@@ -42,7 +42,6 @@ for i in range(0, 10):
     time.sleep(0.1)
 
 
-
 SERVICE_ACCOUNT_FILE = 'keys1.json'
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 cred = None
@@ -50,6 +49,8 @@ cred = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 SAMPLE_SPREADSHEET_ID = '1wPJGWEIItwlbYcbH3K586pipDY0JFe1QBFw5chFwF-Q'
 TELEGRAM_TOKEN = '5469401522:AAG1L6SJ2rs94Z4j_tl8HCHNVnMWLcg81kc'
+
+
 def update_sheet(sheet_range, list_values, sheet):
     try:
         result = sheet.values().append(
@@ -93,10 +94,12 @@ def check_internet():
             except:
                 print("Failed on all attempts.")
                 now = datetime.now()
-                lines.append(f"Failed to connect at {now}. Attempted reboot \n")
+                lines.append(
+                    f"Failed to connect at {now}. Attempted reboot \n")
                 os.system("sudo reboot")
                 for i in lines:
                     file1.write(i + '\n')
+
 
 def on_chat_message(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
@@ -110,12 +113,15 @@ def on_chat_message(msg):
             history = get_hx()
             bot.sendMessage(chat_id, history)
         if msg['text'] == '/start':
-            bot.sendMessage(groupchatid,f"Fridge temperature at: {curr_temp} *C \n")
+            bot.sendMessage(
+                groupchatid, f"Fridge temperature at: {curr_temp} *C \n")
         if msg['text'] == '/temp':
-            sent = bot.sendMessage(chat_id, f"Fridge temperature normal at: {curr_temp} *C \n")
+            sent = bot.sendMessage(
+                chat_id, f"Fridge temperature normal at: {curr_temp} *C \n")
 
 
 def on_callback_query(msg):
+    print(msg)
 
     query_id, from_id, query_data = telepot.glance(
         msg, flavor='callback_query')
@@ -181,7 +187,6 @@ def get_hx():
         print(e)
 
 
-
 def high():
     print("hi")
     bot.sendMessage(groupchatid, f"Temperature above 8*C at {read_temp()}")
@@ -210,6 +215,7 @@ Use /getPast to get last 12 hours data
 """)
     except Exception as e:
         print(e)
+
 
 bot = telepot.Bot(TELEGRAM_TOKEN)
 MessageLoop(bot, {'chat': on_chat_message,
@@ -241,11 +247,11 @@ try:
         data = fin.read().splitlines(True)
     with open('logs.txt', 'w') as fout:
         fout.writelines(data[1:])
-    
+
     file1 = open("logs.txt", "a")
     now = datetime.now()
     file1.write(f"Service started at {now} \n")
-    file1.close() 
+    file1.close()
     #print("Sending initial state...")
     # send()
     #print("Data sent!,Ready.")
@@ -275,14 +281,14 @@ try:
         if type(current) == type(None):  # safeguard
             print("Current == NoneType")
             continue
-        
-        with open('T_log.json','r+') as f:
+
+        with open('T_log.json', 'r+') as f:
             data = json.load(f)
             print(current)
             data['Time'] = current_datetime
             data['Temp'] = current
             f.seek(0)
-            json.dump(data,f,indent=4)
+            json.dump(data, f, indent=4)
             f.truncate()
         if current > maximum and current < 40:
             maximum = current

@@ -23,7 +23,6 @@ String BOTtoken = "";
 String ekey = "";
 String eid = "";
 String GROUP_ID = "";
-bool newHr = false;
 WiFiClientSecure client;
 WebServer server(80);
 int botRequestDelay = 1000;
@@ -73,19 +72,25 @@ String printLocalTime(){
   return timeDay;
 }
 
-void isHour(){
+void sendSheets(){
   struct tm timeinfo;
   if(!getLocalTime(&timeinfo)){
     Serial.println("Failed to obtain time");
-    newHr = false;
     return;
   }
-  char hour[30];
-  strftime(hour,30, "%M:%S", &timeinfo);
-  if(hour == "00:00" || hour == "00:01"){
-    newHr = true;
-  } else{
-    newHr = false;
+  char hour[6];
+  strftime(hour,6, "%M", &timeinfo);
+  if(String(hour) == "00" || String(hour) == "30"){
+    HTTPClient http;
+    String tempurl = "https://script.google.com/macros/s/AKfycbwzN9P7fZTUMRbY9JDqi8Hll7wXmkCfi5odI0ljctjXr8tyPhMNhyuhlOMJSscpd-tftQ/exec?sensor=";
+    sensors.requestTemperatures();
+    float temperatureC = sensors.getTempCByIndex(0);
+    String url = tempurl + String(temperatureC);
+    http.begin(url.c_str()); //Specify the URL and certificate
+    http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+    http.GET();
+    http.end();
+    delay(60000);
   }
 }
 
@@ -113,7 +118,12 @@ void handleNewMessages(int numNewMessages) {
       sensors.requestTemperatures();
       float temperatureC = sensors.getTempCByIndex(0);
       String message = "Hello!, " + from_name + " Temperature is: " + String(temperatureC) + "ºC .\n"+ "Updated: " + sgTime;
-      bot.sendMessageWithInlineKeyboard(chat_id, message,"", keyboardJson);
+      bot.sendMessageWithInlineKeyboard(chat_id, message,"", keyboardJson); 
+    }
+    else if(text == "/sheets"){
+      String message = "This is the link to the google sheets";
+      String keybd = "[[{ \"text\" : \"Go to Google\", \"url\" : \"https://docs.google.com/spreadsheets/d/1wPJGWEIItwlbYcbH3K586pipDY0JFe1QBFw5chFwF-Q/edit#gid=572956026\" }]]";
+      bot.sendMessageWithInlineKeyboard(chat_id, message , "",keybd);
     }
     else if(text == "/reset"){
       bot.sendMessage(chat_id,"Resetting...");
@@ -129,20 +139,39 @@ void handleNewMessages(int numNewMessages) {
   }
 }
 
-void checkAlert(float temperatureC){
+void checkAlert(float temperatureC,int numNewMessages){
+    long int t1 = millis();
     while(temperatureC > 8.0){
-      String message = "Warning High temperature "  + String(temperatureC) + "ºC .\n";
-      Serial.println("High");
-      bot.sendMessage(GROUP_ID, message, "");
-      delay(60000);
+      long int t2 = millis();
+      if(t2-t1 > 300000){
+        String message = "Warning High temperature "  + String(temperatureC) + "ºC .\n";
+        Serial.println("High");
+        bot.sendMessage(GROUP_ID, message, "");
+        t1 = millis();
+      }      
+      while (numNewMessages) {
+        handleNewMessages(numNewMessages);
+        numNewMessages = bot.getUpdates(bot.last_message_received + 1);
+      }
+      sendSheets();
+      delay(30000);
       sensors.requestTemperatures();
       temperatureC = sensors.getTempCByIndex(0);
-    }
+    }  
     while(temperatureC < 2.0){
-      String message = "Warning Low temperature "  + String(temperatureC) + "ºC .\n";
-      Serial.println("Low");
-      bot.sendMessage(GROUP_ID, message, "");
-      delay(60000);
+      long int t2 = millis();
+      if(t2-t1 > 300000){
+        String message = "Warning Low temperature "  + String(temperatureC) + "ºC .\n";
+        Serial.println("Low");
+        bot.sendMessage(GROUP_ID, message, "");
+        t1 = millis();
+      } 
+      while (numNewMessages) {
+        handleNewMessages(numNewMessages);
+        numNewMessages = bot.getUpdates(bot.last_message_received + 1);
+      }
+      sendSheets();
+      delay(30000);
       sensors.requestTemperatures();
       temperatureC = sensors.getTempCByIndex(0);
     }
@@ -302,18 +331,7 @@ void loop() {
     delay(100);
     server.handleClient();
   }
-  isHour();
-  if(newHr){
-    HTTPClient http;
-    String url = "https://script.google.com/a/macros/keystoneclinic.sg/s/AKfycbxlGxNWHl3nTuhRhIztusW-1Gy43EYWYwyEmB-98rfzsV4lQXKli0zWgZNjNUbyfhp2HQ/exec?sensor=";
-    sensors.requestTemperatures();
-    float temperatureC = sensors.getTempCByIndex(0);
-    url += temperatureC;
-    http.begin(url.c_str()); //Specify the URL and certificate
-    http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-    http.GET();
-    http.end();
-  }
+  sendSheets();
   int numNewMessages = bot.getUpdates(bot.last_message_received + 1);
   while (numNewMessages) {
       handleNewMessages(numNewMessages);
@@ -321,6 +339,6 @@ void loop() {
   }
   sensors.requestTemperatures();
   float temperatureC = sensors.getTempCByIndex(0);
-  checkAlert(temperatureC);  
-  delay(500);
+  checkAlert(temperatureC,numNewMessages);  
+  delay(100);
 }
