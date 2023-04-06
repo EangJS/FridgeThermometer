@@ -599,6 +599,7 @@ Do note that this command does not clear the counters for each specific exercise
 End the program
 
 # Command Summary
+
 | Action                 | Example Command, Examples                                               | Short Description                                                                                                      |
 |------------------------|-------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
 | **help**               | ```help```                                                              | Prints available commands message                                                                                      |
