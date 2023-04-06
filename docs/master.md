@@ -211,8 +211,6 @@ and ensures that users will not be bombarded by a long list of commands in the h
 To manage this exists the ```PlannerCommandHandler```, which allows for adding, deleting, 
 and viewing the workout plans.
 
-<p>
-
 <div align="center">
 <img src="UML/Images/PlannerCommandHandler.png"/>
 <p>
@@ -220,7 +218,6 @@ Figure 6.1
 </p>
 </div>
 
-<p>
 
 <div align="center">
 <img src="UML/Images/addPlan.png"/>
@@ -238,8 +235,8 @@ Accounts for the different scenarios that may trigger an error during user's int
 Enumeration: [```ErrorMessages.java```]
 All error messages are stored in the ErrorMessage enumeration for easy access across different classes that could run into similar exceptions.
 
-<img src="UML/Images/ErrorMessagesEnum.png"/>
 <div align="center">
+<img src="UML/Images/ErrorMessagesEnum.png"/>
 <p>
 Figure 7.1
 </p>
