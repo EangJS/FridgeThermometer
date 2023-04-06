@@ -1,261 +1,328 @@
 ---
-title: Guide
+title: Developer Guide
 ---
 
-# User Guide
+* Table of Contents
+{:toc}
 
-## Introduction
+# Developer Guide
 
-FitnessDuke is a **Command Line Application for tracking and managing workouts, optimised for use via the command-line interface (CLI)**.
+## Acknowledgements
 
-## Table of contents
-* [Getting started](#getting-started)
-* [FitnessDuke's Features](#fitnessdukes-features)
-  * [Viewing help: ```help```](#viewing-help-help)
-  * [Exiting the program: ```exit```](#exiting-the-program--exit)
-  * [Getting a list of specific workouts: ```generate [arguments] [number]```](#getting-a-list-of-specific-workouts--generate-arguments-number)
-  * [Getting the filters to generate workout ```filters```](#getting-the-filters-to-generate-workout-filters)
-  * [Searching for a workout ```find [keyword]```](#searching-for-a-workout-find-keyword)
-  * [Viewing plans ```plans```](#viewing-plans-plans)
-  * [Seeing your workout history ```history```](#seeing-your-workout-history-history)
-  * [Seeing your workout summary ```data```](#seeing-your-workout-summary-data)
-  * [Generating a list of planned exercises ```quick [plan_name] [x]```](#generating-a-list-of-planned-exercises-quick-planname-x)
-  * [Getting into a workout ```start```](#getting-into-a-workout-start)
-  * [Getting into the fitness planner ```planner```](#getting-into-the-fitness-planner-planner)
-* [Saving the data](#saving-the-data)
-* [Editing the data file](#editing-the-data-file)
-* [FAQ](#faq)
-* [Command Summary](#command-summary)
+* The CS2113 Team (Professor and Teaching Assistants) For their guidance in teaching us concepts of Software
+  Engineering and OOP
+* [AddressBook3](https://github.com/se-edu/addressbook-level3) Guidance and examples for OOP and project aspects were 
+  used from this repository.
 
-## Getting Started
+* Exercise Data retrieved from: [Wrkout](https://github.com/wrkout/exercises.json) (open source MIT license)
+  Used to generate the data.json file containing all the exercises data used
 
-1. Ensure you have Java 11 or later installed in your PC.
-2. Download the latest version of ```duke.jar``` from our GitHub releases
-   page [here](https://github.com/AY2223S2-CS2113-W13-2/tp/releases).
-3. Copy the file to the folder where you want to use fitness duke.
-4. Open a command terminal, ```cd``` into the folder you put the jar file in, and use the ```java -jar duke.jar``` command to run the application.
-5. Type the command in the command box and press Enter to execute it.
-   e.g. typing help and pressing Enter will open the help window.
-Some example commands you can try:
-   * ```help```: Displays the general commands which user can input for the program.
-   * ```exit```: Exits the app.
-   * ```filters```: Displays available filters for users to customise their workout.
-   * ```history```: Lists all finished exercises.
-6. Refer to [FitnessDuke's Features](#fitnessdukes-features) below for details of each command.
+## Design & implementation
 
-## FitnessDuke's Features
+### Architecture Component
 
-## *General*
+<div align="center">
+<img src="UML/Images/architecture.png"/>
+<p>
+Figure 1.1
+</p>
+</div>
 
-### Viewing help: ```help```
+The architecture diagram as shown in Figure 1.1 shows us the high level design of Fitness Duke.
 
-Shows a list of basic commands that the user can input.
+**Main Components**
 
-Format: ```help```
+The architecture comprises five main components.
+* ```main```: Responsible for the initialisation of user data, app data and connection of various components together
+* ```Ui```: The User Interface of the app
+* ```CommandHandler```: The main logic controller of the app
+* ```Storage```: Reading and Writing data to and from the hard disk
 
-### Exiting the program: ```exit```
+```Hard Drive``` represents the files in which user data are stored
 
-Gracefully exits the program and prints bye message
+**Interaction of components**
 
-Format: ```exit```
+<div align="center">
+<img src="UML/Images/overall_sequence-0.png"/>
+<p>
+Figure 1.2
+</p>
+</div>
 
-### Getting a list of specific workouts: ```generate [arguments] [number]```
+The sequence diagram as shown in Figure 1.2 shows the interaction of all the main components when a user enters the 
+```start``` command and subsequently enters the ```finish``` command to simulate the process of a workout session 
+experienced by the user.
 
-Shows a list containing *number* of random workouts that suits the arguments filter
+The five main components in the diagram shows the main classes participating in the process.
 
-*Possible arguments are*:
+These classes will be defined into its own API as an ```interface``` in the upcoming iteration
 
-*Body Part*: ```upper```, ```core```, ```legs```
+More details on these components will be described below.
 
-*Difficulty*: ```easy```, ```medium```, ```hard```,
+### UI Component
 
-*Type*: ```static```, ```gym```
+Represented by the Ui class, it handles the interactions between the user and the program. In addition, it also displays
+a basic overview of what the program does.
 
-Format: ```generate easy 3```, ```generate hard upper 4```
+Types of pre-defined messages:
 
-Examples:
-```
-generate static upper easy 2
-Exercise ID: 842. 
-Name: V-Bar Pullup
-Difficulty Level: beginner
-Workout Type: upper body
-Start by placing the middle of the V-bar in the middle of the pull-up bar (assuming that the pull-up station you are using does not have neutral grip handles). The V-Bar handles will be facing down so that you can hang from the pull-up bar through the use of the handles., Once you securely place the V-bar, take a hold of the bar from each side and hang from it. Stick your upper body out and lean yourself back slightly in order to better engage the upper body. This will be your starting position., Using your upper body, pull your torso up while leaning your head back slightly so that you do not hit yourself with the chin-up bar. Continue until your upper body nearly touches the V-bar. Exhale as you execute this motion., After a second hold on the contracted position, slowly lower your body back to the starting position as you breathe in., Repeat for the prescribed number of repetitions.
+1. Information messages that describe the functionalities of the program (`Greet` , `Bye`, `PrintExercises` classes)
+2. Help messages that details the usage of the possible commands available in the program (`PrintHelpMessage` class)
+3. Error messages that trigger when a user's input is incorrect and provides an explanation to the
+   user. (`ErrorMessages` class)
 
-Exercise ID: 95. 
-Name: Body Tricep Press
-Difficulty Level: beginner
-Workout Type: upper body
-Position a bar in a rack at upper body height., Standing, take a shoulder width grip on the bar and step a yard or two back, feet together and upper body extended so that you are leaning on the bar. This will be your starting position., Begin by flexing the elbow, lowering yourself towards the bar., Pause, and then reverse the motion by extending the elbows., Progress from bodyweight by adding chains over your upper body.
-
-________________________________________
-```
-
-### Getting the filters to generate workout ```filters```
-
-Shows a list of filters available and their description
-
-The filters are shown here:
-
-
-| Filter   | Description                                   |
-|----------|-----------------------------------------------|
-| [gym]    | exercises that can be done with gym equipment |
-| [static] | exercises that only require your body         |
-| [easy]   | exercises of low intensity                    |
-| [medium] | exercises of medium intensity                 |
-| [hard]   | exercises of hard intensity                   |
-| [upper]  | exercises that train your upper body          |
-| [core]   | exercises that train your core                |
-| [legs]   | exercises that train your legs                |
-
-
-### Searching for a workout ```find [keyword]```
-
-Finds existing exercises whose names contain the input keyword.
-
-Format: ```find [keyword]```
-
-Examples:
-```
-find arm
-Here are the exercises matching your keyword:
-1.Farmer's Walk
-2.Kneeling Forearm Stretch
-3.Seated One-arm Cable Pulley Rows
-________________________________________
-```
-```
-find legs
-Here are the exercises matching your keyword:
-1.legs-SMR
-2.Lying Prone legs
-3.legs-SMR
-________________________________________
-```
-### Viewing plans ```plans```
+The class diagram as shown in Figure *2.1* illustrates the structure of the different classes in Ui.
 
-Displays all workout plans which have been created by the user.
+<div align="center">
+<img src="UML/Images/Ui.png"/>
+<p>
+Figure 2.1
+</p>
+</div>
 
-Format: ```plans```
+### Storage Component
 
-### Seeing your workout history ```history```
+API: ```Storagejava```
 
-Displays your entire career history in using Fitness Duke.
-Each history will give you details on the sessions you completed with the date and time as well
-as the exercises that you completed.
+The *Storage* component handles the reading and writing of user data to and from the local hard disk in the form of
+a json file.
+```UserCareerData``` will be stored as ```userData.json```
+```UserPlan``` will be stored as ```plansData.json```
 
-Format: ```history```
+Key Aspects:
 
-### Seeing your workout summary ```data```
+* Handles the serialization and deserialization of user data into a json file using
+  the [Gson Library](https://github.com/google/gson)
+* Handles the creation of user data file when previous one is missing or corrupted
+* Handles the loading of user data and plans upon start of the program
 
-Displays the list of exercises which you have completed, along with the individual frequencies of
-completion of each exercise.
+<div align="center">
+<img src="UML/Images/Storage-0.png"/>
+<p>
+Figure 2.1
+</p>
+</div>
 
-Format: ```data```
+The class diagram as shown in *Figure 2.1* illustrates the structure of the different classes in Storage.
+The ```Storage``` Interface is implemented by the ```StorageManager``` class.
+The ```StorageManager``` class is associated with the ```UserPlansStorage``` interface which handles the reading and writing of 
+all ```UserPlan``` ,and the ```UserCareerStorage``` interface which handles the reading and writing of all 
+```UserCareerData```. ```UserPlansStorage``` class. These two interfaces are implemented by the JsonUserPlansStorage 
+and JsonUserCareerStorage classes respectively.
+
+<div style="page-break-after: always;"></div>
+
+The Storage API interacts with the other classes as shown in the *Sequence Diagram* as per *Figure 3.2*
+where it shows how the Storage API loads the local user data json file as well as the user plans json file upon the
+resumption of the program assuming data file is **present and not corrupted**.
+
+<div align="center">
+<img src="UML/Images/LoadingUserData-0.png"/>
+<p>
+Figure 3.2
+</p>
+</div>
+
+During the initialisation of FitnessDuke, the ```loadUserData``` method from the Storage API which firstly 
+instantiates a new ```UserCareerData``` object. The method would subsequently iterate and parse through all the 
+sessions from the local hard disk into the new ```UserCareerData``` object.
+
+The populated ```UserCareerData``` which now contains all the previous sessions is returned back to be used by the main 
+method of the program.
+
+This process is similar for the loading of the ```UserPlan``` object except where we loop through seven times 
+(number of days in a week) and for each loop, iterate and parse through each plan from the local hard disk into the 
+newly instantiated ```UserPlan``` object.
+
+<div style="page-break-after: always;"></div>
+
+In the unlikely event that the user accidentally deleted or modify the json files stored on the hard disk incorrectly,
+the sequence diagram below as per Figure 2.3 illustrates how the program loads a fresh set of data. This means all 
+previous data will be lost.
+
+There are a few cases where this could happen **(non-exhaustive)** causing a DukeError to be thrown:
+* File missing or not named correctly
+* File does not follow json format
+* Missing or deleted entries
+* Invalid inputs of user data.
+
+<div align="center">
+<img src="UML/Images/invalidFile-0.png"/>
+<p>
+Figure 2.3
+</p>
+</div>
+
+As shown in the diagram, a failed attempt in loading user data from the json file would result in the program to 
+overwrite an existing userData.json file with a blank state.
+
+<div style="page-break-after: always;"></div>
 
-### Generating a list of planned exercises ```quick [plan_name] [x]```
+User data would be written to the json file at various points of the program
+The UserCareerData is saved to the json file whenever there is any modifications made to the object during runtime. This also applies to the UserPlan.
 
-Generates a list of exercises planned by the user.
+<div align="center">
+<img src="UML/Images/WritingUserData-0.png"/>
+<p>
+Figure 2.3
+</p>
+</div>
+
+The sequence diagram above as shown by Figure 2.4 illustrates the interaction of Storage components whenever 
+```writeToJson()``` is invoked. This process is also similar for the saving of ```UserPlan```.
 
-Format: ```quick home_legs_day 3```, plan_name has to be present under "plans" and x refers to the number of exercises the user intends to do.
-
-Examples:
-```
-YOUR WORKOUT PLAN:
-_________
-MONDAY
-1. home_leg_day
-Filters: legs static
-_________
-TUESDAY
-_________
-WEDNESDAY
-_________
-THURSDAY
-_________
-FRIDAY
-_________
-SATURDAY
-_________
-SUNDAY
-________________________________________
-```
-```
-quick home_leg_day 3
-Exercise ID: 576. 
-Name: Rear Leg Raises
-Difficulty Level: beginner
-Workout Type: legs
-Place yourself on your hands knees on an exercise mat. Your head should be looking forward and the bend of the knees should create a 90-degree angle between the legs and the legs. This will be your starting position., Extend one leg up and behind you. The knee and hip should both extend. Repeat for 5-10 repetitions, and then switch sides.
-
-Exercise ID: 444. 
-Name: Lying Glute
-Difficulty Level: expert
-Workout Type: legs
-Lie on your back with your partner kneeling beside you., Flex the hip of one leg, raising it off of the floor. Rotate the leg so the foot is over the opposite hip, the lower leg perpendicular to your body. Your partner should hold the knee and ankle in place. This will be your starting position., Attempt to push your leg towards your partner, who should be preventing any actual movement of the leg., After 10-20 seconds, completely relax as your partner gently pushes the ankle and knee towards your upper body. Be sure to inform your helper when the stretch is adequate to prevent injury or overstretching.
-
-Exercise ID: 305. 
-Name: Groiners
-Difficulty Level: intermediate
-Workout Type: legs
-Begin in a pushup position on the floor. This will be your starting position., Using both legs, jump forward landing with your feet next to your hands. Keep your head up as you do so., Return to the starting position and immediately repeat the movement, continuing for 10-20 repetitions.
-
-________________________________________
-```
-
-## *Starting a workout session*
-
-### Getting into a workout ```start```
-
-Enters a workout session
-
-**Note that you will not be able to access any other features until you complete your exercise
-
-Format: ```start```
-
-### Within your workout session
-Click [here](UG_features/workout_session.md) to learn more about using our workouts feature.
-
-
-## *Configuring plans*
-
-### Getting into the fitness planner ```planner```
-
-Enters another interface where you can configure your workout plans and save them for the week
-
-Format: ```planner```
-
-Click [here](UG_features/planner.md) to learn more about using our planner feature.
-
-### Saving the data
-
-FitnessDuke data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually. :-)
-
-### Editing the data file
-
-FitnessDuke data are saved as a JSON file [JAR file location]/resources/data.json. Advanced users are welcome to update data directly by editing that data file.
-
-**Caution: If your changes to the data file makes its format invalid, FitnessDuke will discard all data and start with an empty data file at the next run.**
-
-## FAQ
-
-**Q**: Can I add my own workouts to the program?
-
-**A**: This is a very intuitive feature, but we have not implemented it yet.
-
-## Command Summary
-
-| Action       | Format, Examples                                                         |
-|--------------|--------------------------------------------------------------------------|
-| **help**     | ```help```                                                               |
-| **exit**     | ```exit```                                                               |
-| **generate** | ```generate [arguments] [number]``` <br> eg. ```generate hard upper 4``` |
-| **filters**  | ```filters```                                                            |
-| **find**     | ```find [keyword]```<br> eg. ```find arms```                             |
-| **plans**    | ```plans```                                                              |
-| **planner**  | ```planner```                                                            |
-| **history**  | ```history```                                                            |
-| **data**     | ```data```                                                               |
-| **start**    | ```start```                                                              |
-| **quick**    | ```quick [plan_name] [x]``` <br> eg. ```quick home_leg_day 3```          |
+### Command Handler Component
+
+The command handler component consists of multiple states that the program can be at any time. 
+It controls where the user input is being processed.
+
+#### Key Aspects: 
+
+* Handles when there is an exercise ongoing, giving access to finishing and hence saving finished exercises, and keeping track of what exercises there are.
+* Handles when there is no exercise ongoing, granting access to generating new exercises with different confines.
+
+<div align="center">
+<img src="UML/Images/CommandHandler.png"/>
+<p>
+Figure 4.1
+</p>
+</div>
+
+### ExerciseSessionCommandHandler
+The exercise Command Handler is engaged when the user has an ongoing workout.
+Upon completion of the workout, the user can save their workout if completed, such
+that the completed workout is logged and will be saved for future reference.
+
+To manage this exists the ```ExerciseStateHandler```, which allows for saving, starting
+ending, cancelling workouts.
+<div align="center">
+<img src="UML/Images/CommandHandler.png"/>
+<p>
+Figure 5.1
+</p>
+</div>
+
+### PlannerCommandHandler
+The planner Command Handler is engaged when the user enters the workout planner.
+By implementing a separate Command Handler dedicated for the planning of work-outs, 
+this simplifies the user experience by compartmentalising the secondary planner function,
+and ensures that users will not be bombarded by a long list of commands in the help menu.
+
+To manage this exists the ```PlannerCommandHandler```, which allows for adding, deleting, 
+and viewing the workout plans.
+
+<p>
+
+<div align="center">
+<img src="UML/Images/PlannerCommandHandler.png"/>
+<p>
+Figure 6.1
+</p>
+</div>
+
+<p>
+
+<div align="center">
+<img src="UML/Images/addPlan.png"/>
+<p>
+Figure 6.2
+</p>
+</div>
+
+### Exceptions
+
+Accounts for the different scenarios that may trigger an error during user's interactions with the program
+
+#### Error Message Handling
+Enumeration: [```ErrorMessages.java```]
+All error messages are stored in the ErrorMessage enumeration for easy access across different classes that could run into similar exceptions.
+<img src="UML/Images/ErrorMessagesEnum.png"/>
+<div align="center">
+<p>
+Figure 7.1
+</p>
+</div>
+
+
+### Additional features to be added
+
+1. A workout planner for the user to add and customise their desired sequence or schedule of workouts.
+2. An achievement list that will output messages to congratulate the user based on the different milestones of exercises he/she has achieved when using the program.
+
+## Product scope
+
+### Target user profile
+
+Fitness Duke targets individuals who are looking for a smarter way to keep fit, as well as adding a greater diversity
+to their workout routines.
+
+### Value proposition
+
+With the recent emphasis of healthy lifestyles in Singapore, the Singapore Government has initiated the Healthier SG
+initiative
+[Healthier SG](https://www.healthiersg.gov.sg/). To encourage more fitness activities to be carried out by Singaporeans
+as a form of preventive care, Fitness Duke aims to help Singaporeans to kick-start their journeys towards
+a healthier lifestyle, regardless of their knowledge in exercises or their individual fitness levels.
+Through this program, it aims to not only help users learn new workouts, while also keep track of their fitness
+progress.
+
+## User Stories
+
+| Version | As a ...                                                                                                 | I want to ...                                                                                                                   | So that I can ...                                                              |
+|---------|----------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| v1.0    | - User who wants to start working out<br/>- User who wants to train a specific part of my body           | - Select a specific intensity workout<br/>- Request a workout that comprises exercises that thoroughly exercises that body part | - Exercise according to selected intensity<br/> - Work on my target body part. |
+| V1.0    | - User                                                                                                   | - be able to filter my exercises by body part                                                                                   | - train a specific part of my body                                             |
+| V2.0    | - User                                                                                                   | - be able to start a workout and set it as complete and save it                                                                 | - reflect and track my progress                                                |
+| V2.0    | - User looking for motivation                                                                            | - be able to track my workout history as statistics                                                                             | - better visualise my overall progress                                         |
+| V2.0    | - user with little to no experience with exercise                                                        | - be given instructions for the specific exercise that I am working on                                                          | be educated on how to complete the exercise correctly                          |
+| V2.0    | - User who wants to stay motivated to workout </br> - User who wants to feel good about my past workouts | - See myself be able to accomplish or achieve incrementally greater goals </br> - Keep track of all my exercises                | - Continue to stay motivated in making exercise a fun, long-lasting habit      |
+| V2.1    | - User who likes to be motivated by incentive                                                            | - Gain achievements throughout my usage of the app                                                                              | - Be more motivated to keep exercising                                         |                                        | - 
+| V2.1    | - SAF personnel                                                                                          | - Track my IPPT scores over a period of time                                                                                    | - achieve gold ranking in my IPPT                                              |
+
+## Non-Functional Requirements
+1. The program should be able to generate a list of exercises within 5 seconds
+2. The program should be able to run on any PC (i.e. different OS) <br/> - Be able to handle cases such as user data file corruption
+3. The program is not required to ensure the workouts are carried out safely and properly by the user
+4. Avoid giving repeated workouts in the same session
+
+## Glossary
+
+* *FitnessDuke* - The name of our application
+* *OS* - Operating Systems - Linux, MacOS, Windows
+* *CLI* - Command Line Interface - The terminal in the PC OS
+* *ExerciseData* - Individual Exercise data from the ```data.json``` file
+* *Ui* - User Interface
+* *UserCareer* - The entire usage journey of using our application
+
+## Instructions for manual testing
+
+### Launch and shutdown of program
+1. Download the latest version of the jar file and copy the file to the folder where you want the Fitness Duke program to run.
+2. Run the .jar file based on the instructions on the User Guide.
+Expected: Shows the CLI with the welcome message. alongside some logging messages.
+
+### Input of commands 
+1. Input of unlisted/unknown commands that are not listed in the help command:
+Test cases:  ```o``` , ```hi```
+Expected: Error details will be shown in the terminal
+### ```find``` command
+1. Find a set of exercises based on a specified keyword : ```find [keyword]```
+2.  Test case: ```find```
+Expected: The list of exercises will not be shown. Error details will be shown in the terminal.
+3. Test case :```find arm```
+Expected: The list of exercises containing keyword ```arm``` will be shown.
+### ```generate``` command
+1. Get a list of workouts
+2. Test case: ```generate```
+Expected: The list of exercises will not be shown. Error details will be shown in the terminal.
+3. Test case: ```generate 2```
+Expected: A list of 2 random exercises will be shown, alongside their respective IDs, names, difficulty levels, workout types and descriptions.
+4. Test case: ```generate easy```
+Expected: The list of exercises will not be shown. Error details will be shown in the terminal.
+### ```quick``` command
+1. Prerequisites : An existing plan under ```plans``` 
+2. Test case: ```quick```
+Expected: The list of exercises will not be shown. Error details will be shown in the terminal.
+3. Test case: ```quick home_legs_day 3```
+If plan ```home_legs_day``` is not in ```plans``` , error details will be shown in the terminal.
+Otherwise, list of 3 exercises will be shown related to the workout type.
