@@ -1,0 +1,20 @@
+body {
+    background-color: #071822;
+    color: #c1d1d9;
+}
+.light-mode {
+    background-color: #fafafa;
+    color: #071822;
+}
+.highlight {
+    color: white;
+    background-color: #263238 !important;
+}
+table, th, td {
+    border: 1px solid;
+    padding: 15px;
+}
+img {
+    max-width: 100%;
+    background-color: #ffffff;
+}
